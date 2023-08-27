@@ -1,4 +1,4 @@
-# test_ascii_art.py
+# test.py
 
 from ascii_art import ascii_art
 
