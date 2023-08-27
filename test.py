@@ -1,11 +1,6 @@
 # test_ascii_art.py
 
-import subprocess
-
-from video_flow.operation import activate_virtualenv_command
-
-WRAPPER_PROGRAM = "python run.py"
-TARGET_PROGRAM = "python ascii_art.py"
+from ascii_art import ascii_art
 
 SOURCE = "media/images/input/milo.png"
 DESTINATION = "media/images/output/ascii_milo.png"
@@ -13,22 +8,7 @@ DESTINATION = "media/images/output/ascii_milo.png"
 def main() -> None:
     """Tests the main functionalities of the program."""
 
-    commands = (
-        [
-            activate_virtualenv_command(),
-            (
-                f"{TARGET_PROGRAM} "
-                f"--source_image={SOURCE} "
-                f"--destination_ascii_image={DESTINATION}"
-            )
-        ]
-
-    )
-
-    command = ' & '.join(commands)
-    command = f"{WRAPPER_PROGRAM} {command}"
-
-    subprocess.Popen(command)
+    ascii_art(image=SOURCE, image_destination=DESTINATION)
 # end main
 
 if __name__ == '__main__':
