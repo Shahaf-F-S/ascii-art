@@ -1,4 +1,4 @@
-# process.py
+# image.py
 
 import os
 import time
@@ -23,9 +23,11 @@ __all__ = [
     "wrap_html",
     "unwrap_html",
     "html_to_image",
-    "ascii_art",
+    "image_ascii_art",
     "DEFAULT_COLOR_FACTOR",
-    "DEFAULT_BRIGHTNESS_FACTOR"
+    "DEFAULT_BRIGHTNESS_FACTOR",
+    "numpy_to_pillow",
+    "pillow_to_numpy"
 ]
 
 DEFAULT_COLOR = True
@@ -33,8 +35,33 @@ DEFAULT_QUALITY = 90
 DEFAULT_COLOR_FACTOR = 1.75
 DEFAULT_BRIGHTNESS_FACTOR = 2
 
+def pillow_to_numpy(image: Image.Image) -> np.ndarray:
+    """
+    Converts a pillow image object into a numpy image array.
+
+    :param image: The source image.
+
+    :return: The converted image.
+    """
+
+    # noinspection PyTypeChecker
+    return np.array(image.convert("RGB"))
+# end pillow_to_numpy
+
+def numpy_to_pillow(image: np.ndarray) -> Image.Image:
+    """
+    Converts a numpy image array into a pillow image object.
+
+    :param image: The source image.
+
+    :return: The converted image.
+    """
+
+    return Image.fromarray(image)
+# end numpy_to_pillow
+
 def image_to_ascii_art_html(
-        image: Image.Image,
+        image: Union[Image.Image, np.ndarray],
         lines: Optional[int] = None,
         color: Optional[bool] = None
 ) -> str:
@@ -47,6 +74,10 @@ def image_to_ascii_art_html(
 
     :return: The HTML string.
     """
+
+    if isinstance(image, np.ndarray):
+        image = numpy_to_pillow(image)
+    # end if
 
     width, height = image.size
 
@@ -284,7 +315,7 @@ def html_to_image(
     return image
 # end html_to_image
 
-def ascii_art(
+def image_ascii_art(
         image: Optional[Union[str, Path, Image.Image]] = None,
         html: Optional[Union[str, Path]] = None,
         lines: Optional[int] = None,
@@ -342,4 +373,4 @@ def ascii_art(
     if image_destination is not None:
         save_image(image=art_image, path=image_destination)
     # end if
-# end ascii_art
+# end image_ascii_art

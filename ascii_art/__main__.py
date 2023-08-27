@@ -3,10 +3,11 @@
 from argparse import ArgumentParser
 import sys
 
-from ascii_art.process import (
+from ascii_art.image import (
     DEFAULT_COLOR_FACTOR, DEFAULT_QUALITY, DEFAULT_COLOR,
-    DEFAULT_BRIGHTNESS_FACTOR, ascii_art
+    DEFAULT_BRIGHTNESS_FACTOR, image_ascii_art
 )
+from ascii_art.video import video_ascii_art
 
 __all__ = [
     "main"
@@ -20,8 +21,14 @@ def main() -> None:
     )
 
     parser.add_argument(
-        '--source_image',
-        metavar='SOURCE_IMAGE_FILE',
+        'type',
+        metavar='SOURCE_TYPE',
+        help='source file type (image/video)',
+        type=str, default="image"
+    )
+    parser.add_argument(
+        '--source',
+        metavar='SOURCE_FILE',
         help='image file to load',
         type=str, default=None
     )
@@ -65,13 +72,13 @@ def main() -> None:
         type=float, default=DEFAULT_BRIGHTNESS_FACTOR
     )
     parser.add_argument(
-        '--destination_ascii_image',
-        metavar='DESTINATION_ASCII_IMAGE_FILE',
+        '--destination',
+        metavar='DESTINATION_ASCII_FILE',
         help='path to save ascii image',
         type=str, default=None
     )
     parser.add_argument(
-        '--destination_ascii_html',
+        '--destination_html',
         metavar='DESTINATION_ASCII_HTML_FILE',
         help='path to save html data',
         type=str, default=None
@@ -83,17 +90,38 @@ def main() -> None:
         parser.print_help()
 
     try:
-        ascii_art(
-            image=args.source_image,
-            html=args.source_html,
-            lines=args.lines,
-            color=args.color,
-            quality=args.quality,
-            color_factor=args.color_factor,
-            brightness_factor=args.brightness_factor,
-            html_destination=args.destination_ascii_html,
-            image_destination=args.destination_ascii_image
-        )
+        if args.type == "image":
+            image_ascii_art(
+                image=args.source,
+                html=args.source_html,
+                lines=args.lines,
+                color=args.color,
+                quality=args.quality,
+                color_factor=args.color_factor,
+                brightness_factor=args.brightness_factor,
+                html_destination=args.destination_html,
+                image_destination=args.destinationl
+            )
+
+        elif args.type == "video":
+            video_ascii_art(
+                video=args.source,
+                htmls=args.source_html,
+                lines=args.lines,
+                color=args.color,
+                quality=args.quality,
+                color_factor=args.color_factor,
+                brightness_factor=args.brightness_factor,
+                html_destination=args.destination_html,
+                video_destination=args.destinationl
+            )
+
+        else:
+            print(
+                f"Source type must be either "
+                f"image or video, not: {args.source}."
+            )
+        # end if
 
     except Exception as e:
         print(f"{type(e).__name__}:", str(e))
