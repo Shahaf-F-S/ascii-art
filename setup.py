@@ -24,7 +24,7 @@ def main() -> None:
         include=[],
         requirements="requirements.txt",
         dev_requirements="requirements-dev.txt",
-        name='ascii-art',
+        name='pyasciiartist',
         version='0.0.0',
         description=(
             "A lightweight module for colorful ascii "
