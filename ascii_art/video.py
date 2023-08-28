@@ -17,7 +17,7 @@ from ascii_art.image import (
 )
 
 __all__ = [
-    "video_to_ascii_art_html",
+    "video_to_ascii_art_htmls",
     "video_ascii_art",
     "htmls_to_video",
     "htmls_to_images",
@@ -127,7 +127,7 @@ def load_images(
     )
 # end load_image
 
-def video_to_ascii_art_html(
+def video_to_ascii_art_htmls(
         video: Video,
         lines: Optional[int] = None,
         color: Optional[bool] = None
@@ -148,7 +148,7 @@ def video_to_ascii_art_html(
         partial(image_to_ascii_art_html, lines=lines, color=color),
         video.frames
     )
-# end image_to_ascii_art_html_file
+# end video_to_ascii_art_htmls
 
 def htmls_to_images(
         htmls: List[str],
@@ -280,7 +280,7 @@ def video_ascii_art(
             # end if
         # end if
 
-        htmls = video_to_ascii_art_html(
+        htmls = video_to_ascii_art_htmls(
             video=source, lines=lines, color=color
         )
     # end if
