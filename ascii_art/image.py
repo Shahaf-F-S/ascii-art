@@ -1,4 +1,4 @@
-# image.py
+# source.py
 
 import os
 import time
@@ -37,11 +37,11 @@ DEFAULT_BRIGHTNESS_FACTOR = 2
 
 def pillow_to_numpy(image: Image.Image) -> np.ndarray:
     """
-    Converts a pillow image object into a numpy image array.
+    Converts a pillow source object into a numpy source array.
 
     :param image: The source image.
 
-    :return: The converted image.
+    :return: The converted source.
     """
 
     # noinspection PyTypeChecker
@@ -50,11 +50,11 @@ def pillow_to_numpy(image: Image.Image) -> np.ndarray:
 
 def numpy_to_pillow(image: np.ndarray) -> Image.Image:
     """
-    Converts a numpy image array into a pillow image object.
+    Converts a numpy source array into a pillow source object.
 
     :param image: The source image.
 
-    :return: The converted image.
+    :return: The converted source.
     """
 
     return Image.fromarray(image)
@@ -66,7 +66,7 @@ def image_to_ascii_art_html(
         color: Optional[bool] = None
 ) -> str:
     """
-    Generates an HTML string of ASCII art from a source pillow image object.
+    Generates an HTML string of ASCII art from a source pillow source object.
 
     :param image: The source image object or file path.
     :param lines: The amount of lines in the html string.
@@ -106,7 +106,7 @@ def image_to_ascii_art_html(
 
 def wrap_html(html: str) -> str:
     """
-    Wraps the html with the styling for the image.
+    Wraps the html with the styling for the source.
 
     :param html: The html data.
 
@@ -175,9 +175,9 @@ def load_html(path: Union[str, Path]) -> str:
 
 def save_image(image: Union[Image.Image, np.ndarray], path: Union[str, Path]) -> None:
     """
-    Saves the image data to the saving path.
+    Saves the source data to the saving path.
 
-    :param image: The image object.
+    :param image: The source object.
     :param path: The saving path.
     """
 
@@ -199,11 +199,11 @@ def save_image(image: Union[Image.Image, np.ndarray], path: Union[str, Path]) ->
 
 def load_image(path: Union[str, Path]) -> Union[Image.Image, np.ndarray]:
     """
-    Loads the image data from the path.
+    Loads the source data from the path.
 
     :param path: The saving path.
 
-    :return: The image object.
+    :return: The source object.
     """
 
     if str(path).endswith(".npy"):
@@ -228,12 +228,12 @@ def html_to_image(
     Generates an image from the html.
 
     :param html: The HTML string.
-    :param size: The size to crop the image to.
-    :param quality: The quality of the image.
-    :param brightness_factor: The brightness factor to scale the image.
-    :param color_factor: The color factor to scale the image.
+    :param size: The size to crop the source to.
+    :param quality: The quality of the source.
+    :param brightness_factor: The brightness factor to scale the source.
+    :param color_factor: The color factor to scale the source.
 
-    :return: The generated image object.
+    :return: The generated source object.
     """
 
     if quality is None:
@@ -316,7 +316,7 @@ def html_to_image(
 # end html_to_image
 
 def image_ascii_art(
-        image: Optional[Union[str, Path, Image.Image]] = None,
+        source: Optional[Union[str, Path, Image.Image]] = None,
         html: Optional[Union[str, Path]] = None,
         lines: Optional[int] = None,
         color: Optional[bool] = None,
@@ -324,33 +324,33 @@ def image_ascii_art(
         brightness_factor: Optional[float] = None,
         color_factor: Optional[float] = None,
         html_destination: Optional[Union[str, Path]] = None,
-        image_destination: Optional[Union[str, Path]] = None,
+        destination: Optional[Union[str, Path]] = None,
 ) -> None:
     """
-    Generate an ASCII ark image from a source image or HTML file.
+    Generate an ASCII ark source from a source image or HTML file.
 
-    :param image: The source image object or file path.
+    :param source: The source image object or file path.
     :param html: The html file path or data.
     :param lines: The amount of lines in the html string.
     :param color: The value to color the html.
-    :param quality: The quality of the image.
-    :param brightness_factor: The brightness factor to scale the image.
-    :param color_factor: The color factor to scale the image.
+    :param quality: The quality of the source.
+    :param brightness_factor: The brightness factor to scale the source.
+    :param color_factor: The color factor to scale the source.
     :param html_destination: The path to save the html data in.
-    :param image_destination: The path to save the generated image data in.
+    :param destination: The path to save the generated source data in.
     """
 
-    if (html, image) == (None, None):
-        raise ValueError("At least one of html or image must be defined.")
+    if (html, source) == (None, None):
+        raise ValueError("At least one of html or source must be defined.")
     # end if
 
     if html is None:
-        if isinstance(image, (str, Path)):
-            image = load_image(str(image))
+        if isinstance(source, (str, Path)):
+            source = load_image(str(source))
         # end if
 
         html = image_to_ascii_art_html(
-            image=image, lines=lines, color=color
+            image=source, lines=lines, color=color
         )
     # end if
 
@@ -363,14 +363,14 @@ def image_ascii_art(
         quality=quality,
         brightness_factor=brightness_factor,
         color_factor=color_factor,
-        size=(image.width, image.height)
+        size=(source.width, source.height)
     )
 
     if html_destination is not None:
         save_html(html=html, path=html_destination)
     # end if
 
-    if image_destination is not None:
-        save_image(image=art_image, path=image_destination)
+    if destination is not None:
+        save_image(image=art_image, path=destination)
     # end if
 # end image_ascii_art

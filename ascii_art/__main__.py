@@ -14,7 +14,7 @@ __all__ = [
 ]
 
 def main() -> None:
-    """Runs the program to generate an ASCII ark image from a source image."""
+    """Runs the program to generate an ASCII ark source from a source source."""
 
     parser = ArgumentParser(
         description="Image to ASCII Art generation software."
@@ -23,19 +23,19 @@ def main() -> None:
     parser.add_argument(
         'type',
         metavar='SOURCE_TYPE',
-        help='source file type (image/video)',
-        type=str, default="image"
+        help='source file type (source/source)',
+        type=str, default="source"
     )
     parser.add_argument(
         '--source',
         metavar='SOURCE_FILE',
-        help='image file to load',
+        help='source file to load',
         type=str, default=None
     )
     parser.add_argument(
         '--source_html',
         metavar='SOURCE_HTML_FILE',
-        help='image file to load',
+        help='source file to load',
         type=str, default=None
     )
     parser.add_argument(
@@ -54,7 +54,7 @@ def main() -> None:
         '--quality',
         metavar='GENERATION_QUALITY',
         help=(
-            f'The quality of the image generation '
+            f'The quality of the source generation '
             f'(between {1} and {100} including)'
         ),
         type=int, default=DEFAULT_QUALITY
@@ -74,7 +74,7 @@ def main() -> None:
     parser.add_argument(
         '--destination',
         metavar='DESTINATION_ASCII_FILE',
-        help='path to save ascii image',
+        help='path to save ascii source',
         type=str, default=None
     )
     parser.add_argument(
@@ -90,9 +90,9 @@ def main() -> None:
         parser.print_help()
 
     try:
-        if args.type == "image":
+        if args.type == "source":
             image_ascii_art(
-                image=args.source,
+                source=args.source,
                 html=args.source_html,
                 lines=args.lines,
                 color=args.color,
@@ -100,12 +100,12 @@ def main() -> None:
                 color_factor=args.color_factor,
                 brightness_factor=args.brightness_factor,
                 html_destination=args.destination_html,
-                image_destination=args.destinationl
+                destination=args.destinationl
             )
 
-        elif args.type == "video":
+        elif args.type == "source":
             video_ascii_art(
-                video=args.source,
+                source=args.source,
                 htmls=args.source_html,
                 lines=args.lines,
                 color=args.color,
@@ -113,13 +113,13 @@ def main() -> None:
                 color_factor=args.color_factor,
                 brightness_factor=args.brightness_factor,
                 html_destination=args.destination_html,
-                video_destination=args.destinationl
+                destination=args.destinationl
             )
 
         else:
             print(
                 f"Source type must be either "
-                f"image or video, not: {args.source}."
+                f"source or source, not: {args.source}."
             )
         # end if
 

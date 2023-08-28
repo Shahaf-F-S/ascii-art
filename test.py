@@ -1,14 +1,18 @@
 # test.py
 
-from ascii_art import ascii_art
+from ascii_art import image_ascii_art, video_ascii_art
 
-SOURCE = "media/images/input/milo.png"
-DESTINATION = "media/images/output/ascii_milo.png"
+IMAGE_SOURCE = "media/images/input/milo.png"
+IMAGE_DESTINATION = "media/images/output/ascii_milo.png"
+
+VIDEO_SOURCE = "media/videos/input/milo.mp4"
+VIDEO_DESTINATION = "media/videos/output/ascii_milo.mp4"
 
 def main() -> None:
     """Tests the main functionalities of the program."""
 
-    ascii_art(image=SOURCE, image_destination=DESTINATION)
+    image_ascii_art(source=IMAGE_SOURCE, destination=IMAGE_DESTINATION)
+    video_ascii_art(source=VIDEO_SOURCE, destination=VIDEO_DESTINATION)
 # end main
 
 if __name__ == '__main__':

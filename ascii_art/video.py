@@ -1,4 +1,4 @@
-# video.py
+# source.py
 
 import os
 import multiprocessing
@@ -77,9 +77,9 @@ def save_images(
         extension: Optional[str] = "png"
 ) -> List[str]:
     """
-    Saves the image data to the saving path.
+    Saves the source data to the saving path.
 
-    :param images: The image objects.
+    :param images: The source objects.
     :param path: The saving path.
     :param extension: The type of file extension.
 
@@ -105,12 +105,12 @@ def load_images(
         path: Union[str, Path], extensions: Iterable[str] = None
 ) -> List[Union[Image.Image, np.ndarray]]:
     """
-    Loads the image data from the path.
+    Loads the source data from the path.
 
     :param path: The saving path.
     :param extensions: The file extensions to load.
 
-    :return: The image object.
+    :return: The source object.
     """
 
     pool = multiprocessing.Pool()
@@ -133,9 +133,9 @@ def video_to_ascii_art_html(
         color: Optional[bool] = None
 ) -> List[str]:
     """
-    Generates an HTML string of ASCII art from a source pillow image object.
+    Generates an HTML string of ASCII art from a source pillow source object.
 
-    :param video: The source video object or file path.
+    :param video: The source object or file path.
     :param lines: The amount of lines in the html string.
     :param color: The value to color the html.
 
@@ -146,7 +146,7 @@ def video_to_ascii_art_html(
 
     return pool.map(
         partial(image_to_ascii_art_html, lines=lines, color=color),
-        video.fps
+        video.frames
     )
 # end image_to_ascii_art_html_file
 
@@ -156,17 +156,17 @@ def htmls_to_images(
         quality: Optional[int] = None,
         brightness_factor: Optional[float] = None,
         color_factor: Optional[float] = None
-) -> List[np.ndarray]:
+) -> List[Image.Image]:
     """
     Generates an image from the html.
 
     :param htmls: The HTML string.
-    :param size: The size to crop the image to.
-    :param quality: The quality of the image.
-    :param brightness_factor: The brightness factor to scale the image.
-    :param color_factor: The color factor to scale the image.
+    :param size: The size to crop the source to.
+    :param quality: The quality of the source.
+    :param brightness_factor: The brightness factor to scale the source.
+    :param color_factor: The color factor to scale the source.
 
-    :return: The generated image object.
+    :return: The generated source object.
     """
 
     pool = multiprocessing.Pool()
@@ -191,16 +191,16 @@ def htmls_to_video(
         color_factor: Optional[float] = None
 ) -> Video:
     """
-    Generates an image from the html.
+    Generates a video from the html.
 
     :param htmls: The HTML string.
-    :param fps: The fps for the video.
-    :param size: The size to crop the image to.
-    :param quality: The quality of the image.
-    :param brightness_factor: The brightness factor to scale the image.
-    :param color_factor: The color factor to scale the image.
+    :param fps: The fps for the source.
+    :param size: The size to crop the source to.
+    :param quality: The quality of the source.
+    :param brightness_factor: The brightness factor to scale the source.
+    :param color_factor: The color factor to scale the source.
 
-    :return: The generated image object.
+    :return: The generated source object.
     """
 
     if fps is None:
@@ -214,17 +214,20 @@ def htmls_to_video(
         color_factor=color_factor
     )
 
+    if not frames:
+        return Video(frames=frames, fps=fps)
+    # end if
+
     return Video(
-        frames=frames,
-        width=frames[0].shape[0],
-        height=frames[0].shape[1],
-        fps=fps,
-        length=len(frames)
+        frames=[pillow_to_numpy(frame) for frame in frames],
+        width=frames[0].width,
+        height=frames[0].height,
+        fps=fps
     )
 # end htmls_to_video
 
 def video_ascii_art(
-        video: Optional[Union[str, Path, Video]] = None,
+        source: Optional[Union[str, Path, Video]] = None,
         htmls: Optional[Union[Union[str, Path], List[str]]] = None,
         lines: Optional[int] = None,
         color: Optional[bool] = None,
@@ -233,52 +236,57 @@ def video_ascii_art(
         brightness_factor: Optional[float] = None,
         color_factor: Optional[float] = None,
         html_destination: Optional[Union[str, Path]] = None,
-        video_destination: Optional[Union[str, Path]] = None,
+        destination: Optional[Union[str, Path]] = None,
 ) -> None:
     """
-    Generate an ASCII ark image from a source image or HTML file.
+    Generate an ASCII ark source from a source video or HTML file.
 
-    :param video: The source video object or file path.
+    :param source: The source video object or file path.
     :param htmls: The html file path or data.
     :param lines: The amount of lines in the html string.
     :param color: The value to color the html.
     :param fps: The fps for the video.
-    :param quality: The quality of the image.
-    :param brightness_factor: The brightness factor to scale the image.
-    :param color_factor: The color factor to scale the image.
+    :param quality: The quality of the source.
+    :param brightness_factor: The brightness factor to scale the source.
+    :param color_factor: The color factor to scale the source.
     :param html_destination: The path to save the html data in.
-    :param video_destination: The path to save the generated video data in.
+    :param destination: The path to save the generated video data in.
     """
 
-    if (video, htmls) == (None, None):
-        raise ValueError("At least one of html or video must be defined.")
-    # end if
-
-    if fps is None:
-        fps = FPS
+    if (source, htmls) == (None, None):
+        raise ValueError("At least one of html or source must be defined.")
     # end if
 
     if htmls is None:
-        if isinstance(video, (str, Path)):
-            if Path(str(video)).is_file():
-                video = Video.load(video)
+        if isinstance(source, (str, Path)):
+            if Path(str(source)).is_file():
+                source = Video.load(source)
+
+                if fps is None:
+                    fps = source.fps
+                # end if
 
             else:
-                images = load_images(video)
+                if fps is None:
+                    fps = FPS
+                # end if
 
-                video = Video(
+                images = load_images(source)
+
+                source = Video(
                     frames=[pillow_to_numpy(image) for image in images],
-                    width=images[0].width,
-                    height=images[0].height,
-                    length=len(images),
                     fps=fps
                 )
             # end if
         # end if
 
         htmls = video_to_ascii_art_html(
-            video=video, lines=lines, color=color
+            video=source, lines=lines, color=color
         )
+    # end if
+
+    if fps is None:
+        fps = FPS
     # end if
 
     if isinstance(htmls, Path) or (isinstance(htmls, (str, Path)) and Path(htmls).exists()):
@@ -290,7 +298,7 @@ def video_ascii_art(
         quality=quality,
         brightness_factor=brightness_factor,
         color_factor=color_factor,
-        size=(video.width, video.height),
+        size=(source.width, source.height),
         fps=fps
     )
 
@@ -298,7 +306,7 @@ def video_ascii_art(
         save_htmls(htmls=htmls, path=html_destination)
     # end if
 
-    if video_destination is not None:
-        art_video.save(video_destination)
+    if destination is not None:
+        art_video.save(destination)
     # end if
 # end ascii_art
