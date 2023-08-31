@@ -215,7 +215,7 @@ def htmls_to_video(
     )
 
     if not frames:
-        return Video(frames=frames, fps=fps)
+        return Video(fps=fps)
     # end if
 
     return Video(
