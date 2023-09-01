@@ -14,7 +14,7 @@ __all__ = [
 ]
 
 def main() -> None:
-    """Runs the program to generate an ASCII ark source from a source source."""
+    """Runs the program to generate an ASCII ark source from a source."""
 
     parser = ArgumentParser(
         description="Image to ASCII Art generation software."
