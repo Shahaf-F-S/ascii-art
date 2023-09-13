@@ -25,7 +25,7 @@ def main() -> None:
         requirements="requirements.txt",
         dev_requirements="requirements-dev.txt",
         name='pyasciiartist',
-        version='0.2.2',
+        version='0.2.3',
         description=(
             "A lightweight module for colorful ascii "
             "art generation from images and videos."

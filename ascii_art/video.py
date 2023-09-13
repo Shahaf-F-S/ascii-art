@@ -188,7 +188,8 @@ def htmls_to_video(
         size: Optional[Tuple[int, int]] = None,
         quality: Optional[int] = None,
         brightness_factor: Optional[float] = None,
-        color_factor: Optional[float] = None
+        color_factor: Optional[float] = None,
+        video: Optional[Video] = None
 ) -> Video:
     """
     Generates a video from the html.
@@ -199,6 +200,7 @@ def htmls_to_video(
     :param quality: The quality of the source.
     :param brightness_factor: The brightness factor to scale the source.
     :param color_factor: The color factor to scale the source.
+    :param video: The video to add the frames into
 
     :return: The generated source object.
     """
@@ -214,16 +216,15 @@ def htmls_to_video(
         color_factor=color_factor
     )
 
-    if not frames:
-        return Video(fps=fps)
+    video = video or Video(fps=fps)
+
+    if frames:
+        video.frames = [pillow_to_numpy(frame) for frame in frames]
+        video.width = frames[0].width,
+        video.height = frames[0].height
     # end if
 
-    return Video(
-        frames=[pillow_to_numpy(frame) for frame in frames],
-        width=frames[0].width,
-        height=frames[0].height,
-        fps=fps
-    )
+    return video
 # end htmls_to_video
 
 def video_ascii_art(
@@ -299,7 +300,8 @@ def video_ascii_art(
         brightness_factor=brightness_factor,
         color_factor=color_factor,
         size=(source.width, source.height),
-        fps=fps
+        fps=fps,
+        video=source.copy()
     )
 
     if html_destination is not None:
