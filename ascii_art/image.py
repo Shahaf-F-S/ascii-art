@@ -2,7 +2,6 @@
 
 import os
 import time
-from typing import Union, Optional, Tuple
 from pathlib import Path
 import tempfile
 
@@ -61,9 +60,9 @@ def numpy_to_pillow(image: np.ndarray) -> Image.Image:
 # end numpy_to_pillow
 
 def image_to_ascii_art_html(
-        image: Union[Image.Image, np.ndarray],
-        lines: Optional[int] = None,
-        color: Optional[bool] = None
+        image: Image.Image | np.ndarray,
+        lines: int = None,
+        color: bool = None
 ) -> str:
     """
     Generates an HTML string of ASCII art from a source pillow source object.
@@ -146,7 +145,7 @@ def unwrap_html(html: str) -> str:
     return html.strip(before).strip(after)
 # end unwrap_html
 
-def save_html(html: str, path: Union[str, Path]) -> None:
+def save_html(html: str, path: str | Path) -> None:
     """
     Saves the HTML data to the saving path.
 
@@ -159,7 +158,7 @@ def save_html(html: str, path: Union[str, Path]) -> None:
     # end open
 # end save_html
 
-def load_html(path: Union[str, Path]) -> str:
+def load_html(path: str | Path) -> str:
     """
     Loads the HTML data from the path.
 
@@ -173,7 +172,7 @@ def load_html(path: Union[str, Path]) -> str:
     # end open
 # end load_html
 
-def save_image(image: Union[Image.Image, np.ndarray], path: Union[str, Path]) -> None:
+def save_image(image: Image.Image | np.ndarray, path: str | Path) -> None:
     """
     Saves the source data to the saving path.
 
@@ -197,7 +196,7 @@ def save_image(image: Union[Image.Image, np.ndarray], path: Union[str, Path]) ->
     # end if
 # end save_image
 
-def load_image(path: Union[str, Path]) -> Union[Image.Image, np.ndarray]:
+def load_image(path: str | Path) -> Image.Image | np.ndarray:
     """
     Loads the source data from the path.
 
@@ -219,10 +218,10 @@ def load_image(path: Union[str, Path]) -> Union[Image.Image, np.ndarray]:
 
 def html_to_image(
         html: str,
-        size: Optional[Tuple[int, int]] = None,
-        quality: Optional[int] = None,
-        brightness_factor: Optional[float] = None,
-        color_factor: Optional[float] = None
+        size: tuple[int, int] = None,
+        quality: int = None,
+        brightness_factor: float = None,
+        color_factor: float = None
 ) -> Image.Image:
     """
     Generates an image from the html.
@@ -316,15 +315,15 @@ def html_to_image(
 # end html_to_image
 
 def image_ascii_art(
-        source: Optional[Union[str, Path, Image.Image]] = None,
-        html: Optional[Union[str, Path]] = None,
-        lines: Optional[int] = None,
-        color: Optional[bool] = None,
-        quality: Optional[int] = None,
-        brightness_factor: Optional[float] = None,
-        color_factor: Optional[float] = None,
-        html_destination: Optional[Union[str, Path]] = None,
-        destination: Optional[Union[str, Path]] = None,
+        source: str | Path | Image.Image = None,
+        html: str | Path = None,
+        lines: int = None,
+        color: bool = None,
+        quality: int = None,
+        brightness_factor: float = None,
+        color_factor: float = None,
+        html_destination: str | Path = None,
+        destination: str | Path = None,
 ) -> None:
     """
     Generate an ASCII ark source from a source image or HTML file.

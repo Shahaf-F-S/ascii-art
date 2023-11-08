@@ -2,7 +2,7 @@
 
 import os
 import multiprocessing
-from typing import Union, Optional, List, Tuple, Iterable
+from typing import Iterable
 from pathlib import Path
 from functools import partial
 
@@ -29,7 +29,7 @@ __all__ = [
 
 FPS = 60
 
-def save_htmls(htmls: Iterable[str], path: Union[str, Path]) -> List[str]:
+def save_htmls(htmls: Iterable[str], path: str | Path) -> list[str]:
     """
     Saves the HTML data to the saving path.
 
@@ -54,7 +54,7 @@ def save_htmls(htmls: Iterable[str], path: Union[str, Path]) -> List[str]:
     return paths
 # end save_html
 
-def load_htmls(path: Union[str, Path]) -> List[str]:
+def load_htmls(path: str | Path) -> list[str]:
     """
     Loads the HTML data from the path.
 
@@ -72,10 +72,10 @@ def load_htmls(path: Union[str, Path]) -> List[str]:
 # end load_html
 
 def save_images(
-        images: Iterable[Union[Image.Image, np.ndarray]],
-        path: Union[str, Path],
-        extension: Optional[str] = "png"
-) -> List[str]:
+        images: Iterable[Image.Image | np.ndarray],
+        path: str | Path,
+        extension: str = "png"
+) -> list[str]:
     """
     Saves the source data to the saving path.
 
@@ -102,8 +102,8 @@ def save_images(
 # end save_image
 
 def load_images(
-        path: Union[str, Path], extensions: Iterable[str] = None
-) -> List[Union[Image.Image, np.ndarray]]:
+        path: str | Path, extensions: Iterable[str] = None
+) -> list[Image.Image | np.ndarray]:
     """
     Loads the source data from the path.
 
@@ -128,10 +128,8 @@ def load_images(
 # end load_image
 
 def video_to_ascii_art_htmls(
-        video: Video,
-        lines: Optional[int] = None,
-        color: Optional[bool] = None
-) -> List[str]:
+        video: Video, lines: int = None, color: bool = None
+) -> list[str]:
     """
     Generates an HTML string of ASCII art from a source pillow source object.
 
@@ -151,12 +149,12 @@ def video_to_ascii_art_htmls(
 # end video_to_ascii_art_htmls
 
 def htmls_to_images(
-        htmls: List[str],
-        size: Optional[Tuple[int, int]] = None,
-        quality: Optional[int] = None,
-        brightness_factor: Optional[float] = None,
-        color_factor: Optional[float] = None
-) -> List[Image.Image]:
+        htmls: Iterable[str],
+        size: tuple[int, int] = None,
+        quality: int = None,
+        brightness_factor: float = None,
+        color_factor: float = None
+) -> list[Image.Image]:
     """
     Generates an image from the html.
 
@@ -178,18 +176,18 @@ def htmls_to_images(
             brightness_factor=brightness_factor,
             color_factor=color_factor
         ),
-        htmls
+        list(htmls)
     )
 # end htmls_to_images
 
 def htmls_to_video(
-        htmls: List[str],
+        htmls: Iterable[str],
         fps: float,
-        size: Optional[Tuple[int, int]] = None,
-        quality: Optional[int] = None,
-        brightness_factor: Optional[float] = None,
-        color_factor: Optional[float] = None,
-        video: Optional[Video] = None
+        size: tuple[int, int] = None,
+        quality: int = None,
+        brightness_factor: float = None,
+        color_factor: float = None,
+        video: Video = None
 ) -> Video:
     """
     Generates a video from the html.
@@ -228,16 +226,16 @@ def htmls_to_video(
 # end htmls_to_video
 
 def video_ascii_art(
-        source: Optional[Union[str, Path, Video]] = None,
-        htmls: Optional[Union[Union[str, Path], List[str]]] = None,
-        lines: Optional[int] = None,
-        color: Optional[bool] = None,
-        quality: Optional[int] = None,
-        fps: Optional[float] = None,
-        brightness_factor: Optional[float] = None,
-        color_factor: Optional[float] = None,
-        html_destination: Optional[Union[str, Path]] = None,
-        destination: Optional[Union[str, Path]] = None,
+        source: str | Path | Video = None,
+        htmls: str | Path | Iterable[str] = None,
+        lines: int = None,
+        color: bool = None,
+        quality: int = None,
+        fps: float = None,
+        brightness_factor: float = None,
+        color_factor: float = None,
+        html_destination: str | Path = None,
+        destination: str | Path = None
 ) -> None:
     """
     Generate an ASCII ark source from a source video or HTML file.
