@@ -4,7 +4,7 @@ import os
 import codecs
 import pathlib
 from setuptools import setup as _setup, find_namespace_packages
-from typing import Optional, Iterable, Union, Any, Tuple, List
+from typing import Iterable, Any
 
 __all__ = [
     "Dependencies",
@@ -22,8 +22,8 @@ class Dependencies:
 
     def __init__(
             self,
-            requirements: Optional[Iterable[str]] = None,
-            links: Optional[Iterable[str]] = None
+            requirements: Iterable[str] = None,
+            links: Iterable[str] = None
     ) -> None:
         """
         Defines the class attributes.
@@ -46,8 +46,8 @@ class Dependencies:
 # end Dependencies
 
 def parse_requirements(
-        source: Union[str, pathlib.Path],
-        excluded: Optional[Iterable[str]] = None
+        source: str | pathlib.Path,
+        excluded: Iterable[str] = None
 ) -> Dependencies:
     """
     Parses the requirements file.
@@ -122,7 +122,7 @@ def parse_requirements(
     )
 # parse_requirements
 
-def unfold(obj: Any, /, indentation: Optional[int] = None) -> str:
+def unfold(obj: Any, /, indentation: int = None) -> str:
     """
     Unfolds the object if it is an iterable.
 
@@ -178,9 +178,10 @@ def unfold(obj: Any, /, indentation: Optional[int] = None) -> str:
 # end unfold
 
 def get_dependencies(
-        *, requirements: Optional[Union[str, pathlib.Path]] = None,
-        dev_requirements: Optional[Union[str, pathlib.Path]] = None
-) -> Tuple[Dependencies, Dependencies]:
+        *,
+        requirements: str | pathlib.Path = None,
+        dev_requirements: str | pathlib.Path = None
+) -> tuple[Dependencies, Dependencies]:
     """
     Runs the program to create the package.
 
@@ -221,8 +222,7 @@ def get_dependencies(
 # end get_dependencies
 
 def build_pyproject(
-        project: Optional[Union[str, pathlib.Path]] = None,
-        **kwargs: Any
+        project: str | pathlib.Path = None, **kwargs: Any
 ) -> None:
     """
     Builds the package.
@@ -280,8 +280,7 @@ def build_pyproject(
 # end build_pyproject
 
 def build_manifest(
-        include: Optional[Iterable[str]] = None,
-        manifest: Optional[bool] = None
+        include: Iterable[str] = None, manifest: bool = None
 ) -> None:
     """
     Builds the manifest file.
@@ -310,7 +309,7 @@ def build_manifest(
         # end open
     # end if
 # end build_manifest
-def collect_files(location: str, levels: Optional[int] = None) -> List[str]:
+def collect_files(location: str | pathlib.Path, levels: int = None) -> list[str]:
     """
     Collects all the file paths from the location with the extension.
 
@@ -347,14 +346,14 @@ def collect_files(location: str, levels: Optional[int] = None) -> List[str]:
 # end collect_files
 
 def setup(
-        package: Union[str, pathlib.Path], *,
-        readme: Optional[Iterable[str]] = None,
-        exclude: Optional[Iterable[str]] = None,
-        include: Optional[Iterable[str]] = None,
-        requirements: Optional[Union[str, pathlib.Path]] = None,
-        dev_requirements: Optional[Union[str, pathlib.Path]] = None,
-        project: Optional[Union[str, pathlib.Path]] = None,
-        manifest: Optional[bool] = None,
+        package: str | pathlib.Path, *,
+        readme: str | bool | pathlib.Path = None,
+        exclude: Iterable[str | pathlib.Path] = None,
+        include: Iterable[str | pathlib.Path] = None,
+        requirements: str | pathlib.Path = None,
+        dev_requirements: str | pathlib.Path = None,
+        project: str | pathlib.Path = None,
+        manifest: bool = None,
         **kwargs: Any
 ) -> None:
     """
@@ -378,7 +377,7 @@ def setup(
         include = list(include)
     # end if
 
-    if readme is None:
+    if readme in (None, True):
         readme = 'README.md' if os.path.exists('README.md') else None
     # end if
 
@@ -386,8 +385,8 @@ def setup(
         exclude = ()
     # end if
 
-    if readme is not None:
-        with codecs.open(readme, 'r') as desc_file:
+    if isinstance(readme, (str, pathlib.Path)):
+        with codecs.open(str(readme), 'r') as desc_file:
             long_description = desc_file.read()
         # end open
 
@@ -402,16 +401,15 @@ def setup(
     include = list(
         set(
             include + [
-                file for file in [
-                    requirements, dev_requirements, project, "build.py"
-                ]
-                if file and os.path.exists(file)
+                file for file in
+                [requirements, dev_requirements, project, "build.py"]
+                if file and os.path.exists(str(file))
             ]
         )
     )
 
     for included in list(include):
-        if os.path.isdir(included):
+        if included is not None and os.path.isdir(str(included)):
             include += list(set(collect_files(location=included)))
         # end if
     # end for
@@ -431,10 +429,13 @@ def setup(
     )
 
     build_manifest(include=include, manifest=manifest)
-    build_pyproject(project=project, **kwargs)
+
+    if project:
+        build_pyproject(project=project, **kwargs)
+    # end if
 
     _setup(
-        project=project,
+        **(dict(project=project) if project else {}),
         packages=packages,
         long_description=long_description,
         include_package_data=True,

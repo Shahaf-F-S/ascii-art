@@ -16,7 +16,6 @@ def main() -> None:
 
     setup(
         package="ascii_art",
-        project="pyproject.toml",
         exclude=[
             "__pycache__",
             "*.pyc"
@@ -25,7 +24,7 @@ def main() -> None:
         requirements="requirements.txt",
         dev_requirements="requirements-dev.txt",
         name='pyasciiartist',
-        version='0.2.4',
+        version='0.2.5',
         description=(
             "A lightweight module for colorful ascii "
             "art generation from images and videos."
