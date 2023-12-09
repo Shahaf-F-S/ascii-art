@@ -45,7 +45,6 @@ def pillow_to_numpy(image: Image.Image) -> np.ndarray:
 
     # noinspection PyTypeChecker
     return np.array(image.convert("RGB"))
-# end pillow_to_numpy
 
 def numpy_to_pillow(image: np.ndarray) -> Image.Image:
     """
@@ -57,7 +56,6 @@ def numpy_to_pillow(image: np.ndarray) -> Image.Image:
     """
 
     return Image.fromarray(image)
-# end numpy_to_pillow
 
 def image_to_ascii_art_html(
         image: Image.Image | np.ndarray,
@@ -76,17 +74,14 @@ def image_to_ascii_art_html(
 
     if isinstance(image, np.ndarray):
         image = numpy_to_pillow(image)
-    # end if
 
     width, height = image.size
 
     if lines is None:
         lines = int(height / 6)
-    # end if
 
     if color is None:
         color = DEFAULT_COLOR
-    # end if
 
     art = AsciiArt.from_pillow_image(image)
 
@@ -101,7 +96,6 @@ def image_to_ascii_art_html(
     )
 
     return wrap_html(data)
-# end image_to_ascii_art_html_file
 
 def wrap_html(html: str) -> str:
     """
@@ -120,7 +114,6 @@ def wrap_html(html: str) -> str:
         <pre style="{DEFAULT_STYLES}">{html}</pre>
     </body>
     </html>"""
-# end wrap_html
 
 def unwrap_html(html: str) -> str:
     """
@@ -143,7 +136,6 @@ def unwrap_html(html: str) -> str:
     </html>"""
 
     return html.strip(before).strip(after)
-# end unwrap_html
 
 def save_html(html: str, path: str | Path) -> None:
     """
@@ -155,8 +147,6 @@ def save_html(html: str, path: str | Path) -> None:
 
     with open(str(path), "w") as file:
         file.write(html)
-    # end open
-# end save_html
 
 def load_html(path: str | Path) -> str:
     """
@@ -169,8 +159,6 @@ def load_html(path: str | Path) -> str:
 
     with open(str(path), "r") as file:
         return file.read()
-    # end open
-# end load_html
 
 def save_image(image: Image.Image | np.ndarray, path: str | Path) -> None:
     """
@@ -183,18 +171,14 @@ def save_image(image: Image.Image | np.ndarray, path: str | Path) -> None:
     if path.endswith("npy") or isinstance(image, np.ndarray):
         if not isinstance(image, np.ndarray):
             image = np.array(image)
-        # end if
 
         np.save(path[:path.find(".")], image)
 
     else:
         if not path.endswith(".png"):
             image = image.convert("RGB")
-        # end if
 
         image.save(str(path))
-    # end if
-# end save_image
 
 def load_image(path: str | Path) -> Image.Image | np.ndarray:
     """
@@ -213,8 +197,6 @@ def load_image(path: str | Path) -> Image.Image | np.ndarray:
 
     else:
         return Image.open(str(path))
-    # end if
-# end load_image
 
 def html_to_image(
         html: str,
@@ -237,15 +219,12 @@ def html_to_image(
 
     if quality is None:
         quality = DEFAULT_QUALITY
-    # end if
 
     if brightness_factor is None:
         brightness_factor = DEFAULT_BRIGHTNESS_FACTOR
-    # end if
 
     if color_factor is None:
         color_factor = DEFAULT_COLOR_FACTOR
-    # end if
 
     quality = int(quality)
 
@@ -254,7 +233,6 @@ def html_to_image(
             f"Quality must be an int between "
             f"{1} and {100} or equal to them, not: {quality}."
         )
-    # end if
 
     location = tempfile.TemporaryDirectory().name
 
@@ -264,7 +242,6 @@ def html_to_image(
         html_path = html_file.name
 
         html_file.write(html)
-    # end TemporaryFile
 
     image_path = Path(location) / Path("data.png")
 
@@ -282,19 +259,16 @@ def html_to_image(
 
     while not os.path.exists(image_path):
         time.sleep(0.0001)
-    # end while
 
     image = Image.open(image_path)
 
     if brightness_factor != 1:
         current_brightness = ImageEnhance.Brightness(image)
         image = current_brightness.enhance(brightness_factor)
-    # end if
 
     if color_factor != 1:
         current_color = ImageEnhance.Color(image)
         image = current_color.enhance(color_factor)
-    # end if
 
     if size is not None:
         image = image.resize(
@@ -309,10 +283,8 @@ def html_to_image(
         y1 = size[1] - y0
 
         image = image.crop((x0, y0, x1, y1))
-    # end if
 
     return image
-# end html_to_image
 
 def image_ascii_art(
         source: str | Path | Image.Image = None,
@@ -341,21 +313,17 @@ def image_ascii_art(
 
     if (html, source) == (None, None):
         raise ValueError("At least one of html or source must be defined.")
-    # end if
 
     if html is None:
         if isinstance(source, (str, Path)):
             source = load_image(str(source))
-        # end if
 
         html = image_to_ascii_art_html(
             image=source, lines=lines, color=color
         )
-    # end if
 
     if isinstance(html, Path) or (isinstance(html, str) and Path(html).exists()):
         html = load_html(html)
-    # end if
 
     art_image = html_to_image(
         html=html,
@@ -367,9 +335,6 @@ def image_ascii_art(
 
     if html_destination is not None:
         save_html(html=html, path=html_destination)
-    # end if
 
     if destination is not None:
         save_image(image=art_image, path=destination)
-    # end if
-# end image_ascii_art

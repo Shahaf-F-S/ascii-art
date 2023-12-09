@@ -13,8 +13,6 @@ def main() -> None:
 
     image_ascii_art(source=IMAGE_SOURCE, destination=IMAGE_DESTINATION)
     video_ascii_art(source=VIDEO_SOURCE, destination=VIDEO_DESTINATION)
-# end main
 
 if __name__ == '__main__':
     main()
-# end if

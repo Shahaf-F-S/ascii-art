@@ -43,7 +43,6 @@ def save_htmls(htmls: Iterable[str], path: str | Path) -> list[str]:
 
     if location:
         os.makedirs(location, exist_ok=True)
-    # end if
 
     pool = multiprocessing.Pool()
 
@@ -52,7 +51,6 @@ def save_htmls(htmls: Iterable[str], path: str | Path) -> list[str]:
     pool.map(save_html, [(html, file) for html, file in zip(htmls, paths)])
 
     return paths
-# end save_html
 
 def load_htmls(path: str | Path) -> list[str]:
     """
@@ -69,7 +67,6 @@ def load_htmls(path: str | Path) -> list[str]:
         load_html,
         [path for path in os.listdir(path) if path.endswith(".html")]
     )
-# end load_html
 
 def save_images(
         images: Iterable[Image.Image | np.ndarray],
@@ -90,7 +87,6 @@ def save_images(
 
     if location:
         os.makedirs(location, exist_ok=True)
-    # end if
 
     pool = multiprocessing.Pool()
 
@@ -99,7 +95,6 @@ def save_images(
     pool.map(save_image, [(html, file) for html, file in zip(images, paths)])
 
     return paths
-# end save_image
 
 def load_images(
         path: str | Path, extensions: Iterable[str] = None
@@ -125,7 +120,6 @@ def load_images(
             )
         ]
     )
-# end load_image
 
 def video_to_ascii_art_htmls(
         video: Video, lines: int = None, color: bool = None
@@ -146,7 +140,6 @@ def video_to_ascii_art_htmls(
         partial(image_to_ascii_art_html, lines=lines, color=color),
         video.frames
     )
-# end video_to_ascii_art_htmls
 
 def htmls_to_images(
         htmls: Iterable[str],
@@ -178,7 +171,6 @@ def htmls_to_images(
         ),
         list(htmls)
     )
-# end htmls_to_images
 
 def htmls_to_video(
         htmls: Iterable[str],
@@ -205,7 +197,6 @@ def htmls_to_video(
 
     if fps is None:
         fps = FPS
-    # end if
 
     frames = htmls_to_images(
         htmls=htmls,
@@ -220,10 +211,8 @@ def htmls_to_video(
         video.frames = [pillow_to_numpy(frame) for frame in frames]
         video.width = frames[0].width,
         video.height = frames[0].height
-    # end if
 
     return video
-# end htmls_to_video
 
 def video_ascii_art(
         source: str | Path | Video = None,
@@ -254,7 +243,6 @@ def video_ascii_art(
 
     if (source, htmls) == (None, None):
         raise ValueError("At least one of html or source must be defined.")
-    # end if
 
     if htmls is None:
         if isinstance(source, (str, Path)):
@@ -263,12 +251,10 @@ def video_ascii_art(
 
                 if fps is None:
                     fps = source.fps
-                # end if
 
             else:
                 if fps is None:
                     fps = FPS
-                # end if
 
                 images = load_images(source)
 
@@ -276,21 +262,16 @@ def video_ascii_art(
                     frames=[pillow_to_numpy(image) for image in images],
                     fps=fps
                 )
-            # end if
-        # end if
 
         htmls = video_to_ascii_art_htmls(
             video=source, lines=lines, color=color
         )
-    # end if
 
     if fps is None:
         fps = FPS
-    # end if
 
     if isinstance(htmls, Path) or (isinstance(htmls, (str, Path)) and Path(htmls).exists()):
         htmls = load_htmls(htmls)
-    # end if
 
     art_video = htmls_to_video(
         htmls=htmls,
@@ -304,9 +285,6 @@ def video_ascii_art(
 
     if html_destination is not None:
         save_htmls(htmls=htmls, path=html_destination)
-    # end if
 
     if destination is not None:
         art_video.save(destination)
-    # end if
-# end ascii_art

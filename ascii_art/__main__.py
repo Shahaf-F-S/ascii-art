@@ -121,13 +121,9 @@ def main() -> None:
                 f"Source type must be either "
                 f"source or source, not: {args.source}."
             )
-        # end if
 
     except Exception as e:
         print(f"{type(e).__name__}:", str(e))
-    # end try
-# end main
 
 if __name__ == '__main__':
     main()
-# end if
