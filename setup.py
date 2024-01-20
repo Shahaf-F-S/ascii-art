@@ -23,8 +23,8 @@ def main() -> None:
         include=[],
         requirements="requirements.txt",
         dev_requirements="requirements-dev.txt",
-        name='pyasciiartist',
-        version='0.2.5',
+        name='ascii-art',
+        version='0.0.0',
         description=(
             "A lightweight module for colorful ascii "
             "art generation from images and videos."
