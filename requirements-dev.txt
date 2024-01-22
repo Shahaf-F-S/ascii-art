@@ -6,4 +6,4 @@ pillow
 numpy
 ascii-magic
 wkhtmltopdf
-pyvideoio
+python-video
